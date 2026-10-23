@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "extractor/1.0.0": {
+        "dependencies": {
+          "LibHac": "0.19.0"
+        },
+        "runtime": {
+          "extractor.dll": {}
+        }
+      },
+      "LibHac/0.19.0": {
+        "runtime": {
+          "lib/net7.0/LibHac.dll": {
+            "assemblyVersion": "0.19.0.0",
+            "fileVersion": "0.19.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "extractor/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "LibHac/0.19.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7uMUGFpO2V0XJowS5/NjX6qlAlO94dQhLvxNdF3VhW36BXkoHCJPxTzL9r0U4p8w0jKm+9oAUF6XriWrAbIrsw==",
+      "path": "libhac/0.19.0",
+      "hashPath": "libhac.0.19.0.nupkg.sha512"
+    }
+  }
+}

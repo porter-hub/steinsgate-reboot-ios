@@ -1,0 +1,18 @@
+# 翻译查询的作答表（gfx/tools/rt_facts.py 由运行时采集 DM_NVN_FACTS 生成，勿手改）：键 <TAB> 事实 JSON
+309cfe49317d2440	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d","2":"2d"}}
+31af06479deb9b4e	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d"}}
+34e922560210e2f5	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d"}}
+408910f811f2fdba	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d","2":"2d"}}
+50cd41461ebd9dc2	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d"}}
+568498005dbe8133	{"attr":{"0":"float","1":"float","2":"float"},"fout":{},"img":{},"tex":{}}
+71cd08630cdf49aa	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d","2":"2d"}}
+a6926037b609643d	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d","2":"2d"}}
+b6948f80ce559c33	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d"}}
+b937c30ee3b223d5	{"attr":{"0":"float","1":"float","2":"float","3":"float"},"fout":{},"img":{},"tex":{}}
+c68727ae2f18760e	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d","2":"2d"}}
+c8634bc91233835c	{"attr":{"0":"float","1":"float","2":"float","3":"float"},"fout":{},"img":{},"tex":{}}
+d992dcbd105fcf5c	{"attr":{"0":"float","1":"float","2":"float"},"fout":{},"img":{},"tex":{}}
+dd86e3715ad1f4af	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d","2":"2d"}}
+e0bd3c058f241f7f	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d"}}
+e194d42d72d1d272	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d"}}
+f4397c9b239cc3b8	{"attr":{},"fout":{"0":"float"},"img":{},"tex":{"0":"2d","1":"2d"}}

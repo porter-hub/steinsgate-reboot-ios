@@ -1,0 +1,75 @@
+{
+ "_comment": "Facts about the user's own copy of the game (no game content). tools/patch_nso.py and verify/structck.py read build_ids, rewrite_cntfrq, param_keys, host_calls and hooks; scripts/gen_game_config.py turns the rest into host/game_config.h. Keys starting with _ are ignored. Every value marked TBD is filled from Phase 0 evidence (PORT_ASSESSMENT.md), never guessed.",
+ "game": "steins-gate-re",
+ "title": "STEINS;GATE (remaster, Chinese release)",
+ "_title": "display name used by the host and the app; the NACP title is recorded in PORT_ASSESSMENT.md after Phase 0",
+ "ios_display_name": "命运石之门reboot",
+ "_ios_display_name": "the name under the icon on the iPhone (user 2026-10-23); the installer kit's shell carries it (ios/run.sh build-shell), the development build takes PORT_TITLE from ios/local.env",
+ "version": "1.0.3",
+ "program_id": "0x01008BC024FDE000",
+ "update_program_id": "0x01008BC024FDE800",
+ "update_meta_version": 131072,
+ "inputs": {
+  "_inputs": "SHA-256 of the user's own NSPs (measured 2026-10-19); scripts/extract_game.sh refuses other files",
+  "base_nsp_sha256": "c4cb55e942cda64848d049a3b73671f81ce59bb83fe4dc74bc0745f859ab816c",
+  "update_nsp_sha256": "0c3b266d13b7ce2d569f77e29a5c5520349bb589044ddefd3f646dad301fd022"
+ },
+ "modules": [
+  "main",
+  "subsdk0",
+  "sdk"
+ ],
+ "_modules": "load order (Phase 0, 2026-10-19): main imports 34 movie:: symbols defined in subsdk0 (NintendoSDK_movie 20.5.17), so subsdk0 is loaded; rtld never",
+ "build_ids": {
+  "main": "e9016a42a1b2bfa323bc987215c30af3",
+  "rtld": "387e9a52a10ac682bd84858284d2eff7",
+  "sdk": "0023a1b06130cd795f7bc4613772af0a",
+  "subsdk0": "ab62fe8edd07a6a293f885d54359e559"
+ },
+ "_build_ids": "the update's ExeFS (scripts/extract_game.sh, cross-checked by scripts/xcheck_exefs.sh)",
+ "app_pool": "0xCD500000",
+ "_app_pool": "Switch application pool (3285 MiB); the host reports it plus headroom (references/04). npdm: no system resource (no virtual-address-memory mode), main thread stack 1 MiB, priority 44.",
+ "guest_reserve_gb": 5,
+ "res_docked": [
+  1920,
+  1080
+ ],
+ "res_handheld": [
+  1280,
+  720
+ ],
+ "aoc_owned": [],
+ "rewrite_cntfrq": true,
+ "param_keys": [],
+ "host_calls": {},
+ "hooks": {
+  "e9016a42a1b2bfa323bc987215c30af3": {
+   "_why": "R1 F3.1: main+0x38b558 is the input system's set-touch-enabled(bool) (vtable 0x61a608 slot +0x20; flag at +0x300, constructor main+0x38b660, getter +0x38b5c8). Entry word ldrb w9,[x0,#0x300]; the gate reports x1 and changes nothing. game/sg_state.c registers the callback and dies if the gate is missing (that is the negative control).",
+   "obs": [
+    ["0x38b558", 1, "394c0009", "input system set-touch-enabled(bool), x1; R1 F3.1 (F3.0 measured which screens use it)"]
+   ]
+  }
+ },
+ "host": {
+  "_host": "host/game_config.h values. Mac: Horizon-sized alias region. iOS (free Apple ID, no extended-VA entitlement): this game never maps the alias region (Mac 12-minute run: 'C5 alias: mapped now 0 MB, peak 0 MB') and sizes one heap as Total - Used (Mac: 'SetHeapSize: first heap 3152 MB'), so iOS takes mem_init's small-alias partition: one reservation of 256 MB gap + 512 MB alias + 256 MB stacks + the heap region, with the Mac's application pool (3797 MB; heap request 3761 MB). engage-port's 5-9 GB adaptive alias with a 256 MB heap ended this game at boot (iPhone 17 Pro 2026-10-20: SetHeapSize OOM req 0x6b000000 > cap 0x10000000).",
+  "romfs_marker": "script_info.psb.m",
+  "_romfs_marker": "a small file every valid RomFS of this game has (Phase 0 listing: work/game/romfs-entries.tsv)",
+  "mac_reserve_gb": 69,
+  "mac_alias_gb": 64,
+  "mac_heap_region_gb": 4,
+  "ios_reserve_mb": 4864,
+  "ios_alias_mb": 512,
+  "ios_alias_min_mb": 512,
+  "ios_alias_max_mb": 512,
+  "ios_alias_skip_mb": 0,
+  "ios_va_spare_mb": 2048,
+  "ios_heap_region_mb": 3840
+ },
+ "default_lang": "zh-Hans",
+ "_default_lang": "oe::GetDesiredLanguage when DM_LANG is unset: this is the Chinese release (NACP languages en-US, ja, zh-Hant, zh-Hans; RomFS has _sc / _tc / _en movie variants)",
+ "save_user": {
+  "size": "0xb24000",
+  "journal": "0xb24000",
+  "_why": "NACP user-account save data size / journal size (control.nacp +0x3080 / +0x3088): what fs::GetSaveDataSize reports"
+ }
+}

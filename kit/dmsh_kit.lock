@@ -1,0 +1,9 @@
+# kit tool lock (scripts/kit_build.sh): translator as in gfx/tools/dmsh_chain.lock, the kit's spirv-cross per platform, no metal
+dmsh_xlate.dll	367dbd1d948f9478
+Ryujinx.Graphics.Shader.dll	3a26d078bcb7fd70
+Ryujinx.Common.dll	dfea2d554d5f7a63
+xlate_source	d66fad1eca849c6a
+spirv-cross darwin-arm64	c8e571524ec02222
+spirv-cross linux-x86_64	a8519da7aca5f75a
+spirv-cross linux-aarch64	7584c952e5d018d2
+spirv-cross win32-amd64	2946a1665b793a2a
