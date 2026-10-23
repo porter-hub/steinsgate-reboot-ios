@@ -1,4 +1,4 @@
-﻿# Installer kit, Windows (开始-Windows.bat calls this): make sure uv (which brings its own Python) and the .NET 10
+﻿# Installer kit, Windows (Start-Windows.bat calls this): make sure uv (which brings its own Python) and the .NET 10
 # runtime are there, offering the official installers when they are not (always asking first; per user, no
 # administrator: uv to %USERPROFILE%\.local\bin, .NET to %LOCALAPPDATA%\Microsoft\dotnet), then run kit\pack.py.
 # Saved as UTF-8 with a byte order mark: Windows PowerShell 5.1 reads a script without one in the ANSI code page.

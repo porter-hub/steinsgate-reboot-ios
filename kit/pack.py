@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # The installer kit's packer (docs/INSTALL.md): the user's own base + update NSP and prod.keys -> a finished iPhone
-# package (输出/SteinsGate.ipa) and the game data to copy in (输出/游戏数据/*.tar: plain files, which every file-sharing
+# package (output/SteinsGate.ipa) and the game data to copy in (output/game-data/*.tar: plain files, which every file-sharing
 # tool can copy; the app unpacks them from its Documents folder on the next launch, ios/Sources/main.m). Runs on Windows, macOS and Linux
 # (Python from uv, .NET 10 runtime; kit/bootstrap.* checks both first). Nothing leaves the machine.
 #
@@ -13,13 +13,13 @@
 # same bytes everywhere; each file is deleted once it is in a tar, so the disk never holds the data twice). A step whose outputs already match is skipped, so a rerun is quick.
 #
 # Usage: pack.py [--inbox <dir>] [--keys <prod.keys>] [--record]
-#   --inbox: where the NSPs and prod.keys are (default ../把游戏文件放这里; any file name, found by content)
+#   --inbox: where the NSPs and prod.keys are (default ../game-files; any file name, found by content)
 #   --keys: the key file, when it is not in the inbox
 #   --record: kit build only (scripts/kit_build.sh): write expect.json from this run instead of checking against it
 import hashlib, json, os, platform, shutil, stat, subprocess, sys, tempfile, time, zipfile
 
 KIT = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(KIT); SRC = os.path.join(KIT, 'src')
-WORK = os.path.join(ROOT, '工作区'); OUTD = os.path.join(ROOT, '输出'); INBOX = os.path.join(ROOT, '把游戏文件放这里')
+WORK = os.path.join(ROOT, 'work'); OUTD = os.path.join(ROOT, 'output'); INBOX = os.path.join(ROOT, 'game-files')
 EXPECT = os.path.join(KIT, 'expect.json'); RECORD = '--record' in sys.argv
 if '--inbox' in sys.argv: INBOX = os.path.abspath(sys.argv[sys.argv.index('--inbox') + 1])
 KEYS = os.path.abspath(sys.argv[sys.argv.index('--keys') + 1]) if '--keys' in sys.argv else None
@@ -33,7 +33,7 @@ def say(s): print(s, flush=True)
 def step(n, s): say(f'\n{B}[{n}/8] {s}{X}')
 def ok(s): say(f'  {G}✓{X} {s}')
 def die(s, hint=''):
-    say(f'\n{R}✗ {s}{X}' + (f'\n  {hint}' if hint else '')); say(f'\n{R}没有完成。{X}问题解决后再运行一次「开始」：已经做好的步骤会自动跳过。'); sys.exit(1)
+    say(f'\n{R}✗ {s}{X}' + (f'\n  {hint}' if hint else '')); say(f'\n{R}没有完成。{X}问题解决后再运行一次Start 脚本：已经做好的步骤会自动跳过。'); sys.exit(1)
 
 
 def sha(p, chunk=1 << 22, progress=None):
@@ -85,19 +85,19 @@ def platform_tag(): return sys.platform + '-' + platform.machine().lower()
 def prerequisites():
     step(1, '检查环境')
     probs = []
-    if sys.version_info < (3, 12): probs.append(f'Python 版本 {platform.python_version()} 太旧（需要 3.12 以上；「开始」会用 uv 自动准备）')
+    if sys.version_info < (3, 12): probs.append(f'Python 版本 {platform.python_version()} 太旧（需要 3.12 以上；Start 脚本会用 uv 自动准备）')
     try: import capstone, lz4.block, PIL  # noqa: F401
-    except ImportError as e: probs.append(f'缺 Python 组件 {e.name}（「开始」会用 uv 自动装；直接运行 pack.py 时请改用「开始」）')
+    except ImportError as e: probs.append(f'缺 Python 组件 {e.name}（Start 脚本会用 uv 自动装；直接运行 pack.py 时请改用Start 脚本）')
     try:
         rts = subprocess.run(['dotnet', '--list-runtimes'], capture_output=True, text=True).stdout
-        if 'Microsoft.NETCore.App 10.' not in rts: probs.append('没有 .NET 10 运行时（「开始」会帮你装，或从 https://dotnet.microsoft.com/download/dotnet/10.0 下载 .NET Runtime 10）')
-    except OSError: probs.append('找不到 dotnet（.NET 10 运行时；「开始」会帮你装）')
+        if 'Microsoft.NETCore.App 10.' not in rts: probs.append('没有 .NET 10 运行时（Start 脚本会帮你装，或从 https://dotnet.microsoft.com/download/dotnet/10.0 下载 .NET Runtime 10）')
+    except OSError: probs.append('找不到 dotnet（.NET 10 运行时；Start 脚本会帮你装）')
     sc = os.path.join(KIT, 'spirv-cross', platform_tag(), 'spirv-cross' + ('.exe' if WIN else ''))
     if not os.path.isfile(sc): probs.append(f'这个系统（{platform_tag()}）没有附带的着色器工具；支持 Windows x64、macOS Apple 芯片、Linux x64 / arm64')
     for need in ('shell/Port-shell.zip', 'dotnet/extractor/extractor.dll', 'dotnet/dmsh_xlate/dmsh_xlate.dll', 'dmsh_kit.lock') + (() if RECORD else ('expect.json',)):
         if not os.path.exists(os.path.join(KIT, need)): probs.append(f'安装工具不完整：缺 kit/{need}（请重新解压整个安装包）')
     os.makedirs(WORK, exist_ok=True); free = shutil.disk_usage(WORK).free
-    have = os.path.isdir(os.path.join(OUTD, '游戏数据'))
+    have = os.path.isdir(os.path.join(OUTD, 'game-data'))
     if free < (2 if have else 9) * 2 ** 30: probs.append(f'磁盘空间不够：这个文件夹所在的盘只剩 {free / 2 ** 30:.1f} GB，至少需要 {2 if have else 9} GB')
     if probs: die('环境还没准备好：\n  • ' + '\n  • '.join(probs))
     ok(f'Python {platform.python_version()}、.NET 10、着色器工具（{platform_tag()}）、磁盘剩余 {free / 2 ** 30:.0f} GB')
@@ -131,7 +131,7 @@ def inputs():
     keys = [KEYS] if KEYS else sorted((k for k in keys if is_prod(k)), key=lambda k: os.path.basename(k).lower() != 'prod.keys')
     miss = [x for x in ('base', 'update') if x not in found]
     if miss or not keys:
-        die('「把游戏文件放这里」文件夹里缺东西：' + '、'.join(({'base': '游戏本体 NSP', 'update': '1.0.3 更新 NSP'}[m] for m in miss)) + ('、prod.keys' if not keys else ''),
+        die('game-files 文件夹里缺东西：' + '、'.join(({'base': '游戏本体 NSP', 'update': '1.0.3 更新 NSP'}[m] for m in miss)) + ('、prod.keys' if not keys else ''),
             f'把这三个文件放进：{INBOX}\n  只支持 NSP（不支持 XCI）；文件名随意，按内容识别。')
     ok(f'本体：{os.path.basename(found["base"])}'); ok(f'更新：{os.path.basename(found["update"])}'); ok(f'密钥：{os.path.basename(keys[0])}（只读取解密需要的条目，不会显示内容）')
     return found['base'], found['update'], keys[0]
@@ -167,7 +167,7 @@ def extract(base, upd, keys):
 
 
 GAME_MARKER = 'script_info.psb.m'   # host/game_config.h GAME_ROMFS_MARKER: the app finds the data folder by it
-DATA = os.path.join(OUTD, '游戏数据'); PART = 1 << 30
+DATA = os.path.join(OUTD, 'game-data'); PART = 1 << 30
 
 
 def romfs_ok(romfs, quiet=False):
@@ -301,7 +301,7 @@ def assemble(out, ios, tables):
                 with open(p, 'rb') as src: z.writestr(zi, src.read())
     os.replace(tmp, ipa)
     if not own_icon: check('ipa', ['SteinsGate.ipa'], OUTD)   # with the user's own icon only its files differ (checked above)
-    ok(f'输出/SteinsGate.ipa（{os.path.getsize(ipa) / 2 ** 20:.0f} MB）')
+    ok(f'output/SteinsGate.ipa（{os.path.getsize(ipa) / 2 ** 20:.0f} MB）')
     return ipa
 
 
@@ -330,7 +330,7 @@ def data(romfs):
     print('\r', end='')
     shutil.rmtree(romfs, ignore_errors=True)
     check('data', names, DATA)
-    ok(f'输出/游戏数据：{len(names)} 个文件，共 {sum(os.path.getsize(os.path.join(DATA, n)) for n in names) / 2 ** 30:.2f} GB')
+    ok(f'output/game-data：{len(names)} 个文件，共 {sum(os.path.getsize(os.path.join(DATA, n)) for n in names) / 2 ** 30:.2f} GB')
 
 
 # ---------- 8. what next ----------
@@ -346,11 +346,11 @@ def next_steps(ipa):
      用数据线连上 iPhone，把 SteinsGate.ipa 拖进去，填你的 Apple ID，点 Start。
   3. iPhone：设置 → 通用 → VPN 与设备管理 → 信任你的 Apple ID。
   4. 用{files}打开这台 iPhone → 文件 → {GAME.get("ios_display_name", "本 App")}，
-     把「游戏数据」文件夹里的所有 .tar 文件拖进去（共约 5.8 GB）。
+     把 game-data 文件夹里的所有 .tar 文件拖进去（共约 5.8 GB）。
   5. 打开 App。第一次启动会先导入游戏数据、准备着色器（共约一分钟），之后直接进游戏。
 
   免费 Apple ID 的签名 7 天后过期：到时用 Sideloadly 重新装一次 SteinsGate.ipa 即可，存档和游戏数据都会保留。
-  详细图文步骤见「使用说明.html」。''')
+  详细步骤见 README.zh.md（English: README.md）。''')
 
 
 if __name__ == '__main__':

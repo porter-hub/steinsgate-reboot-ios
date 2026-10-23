@@ -1,5 +1,5 @@
 #!/bin/bash
-# Installer kit, macOS and Linux (开始-Mac.command / 开始-Linux.sh call this): make sure uv (which brings its own Python)
+# Installer kit, macOS and Linux (Start-macOS.command / start-linux.sh call this): make sure uv (which brings its own Python)
 # and the .NET 10 runtime are there, offering the official installers when they are not (always asking first; nothing
 # is installed system-wide: uv goes to ~/.local/bin, .NET to ~/.dotnet), then run kit/pack.py with pinned packages.
 set -u

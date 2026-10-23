@@ -1,0 +1,11 @@
+Put these three files into this folder (any file names: they are found by their content):
+  1. the base game NSP (STEINS;GATE, Chinese release)
+  2. the 1.0.3 update NSP
+  3. prod.keys
+Optional: icon.png (or icon.jpg) for your own app icon.
+
+把这三个文件放进这个文件夹（文件名随意，按内容识别）：
+  1. 游戏本体 NSP（中文版）
+  2. 1.0.3 更新 NSP
+  3. prod.keys
+可选：icon.png（或 icon.jpg），换成你自己的 App 图标。
