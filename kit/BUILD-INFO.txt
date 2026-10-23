@@ -1,0 +1,4 @@
+kit 0.1.0
+built 2026-10-23T12:54:06Z from steins-gate-re-port v0.4.0-30-gd79909a40b-dirty
+shader chain b-41fa6ca53e4f
+tools: Xcode 27.1; dotnet SDK 10.0.401; zig 0.17.0

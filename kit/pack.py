@@ -12,11 +12,12 @@
 # files give the same package on every system), pack the RomFS into tars of about 1 GiB (fixed metadata, sorted: the
 # same bytes everywhere; each file is deleted once it is in a tar, so the disk never holds the data twice). A step whose outputs already match is skipped, so a rerun is quick.
 #
-# Usage: pack.py [--inbox <dir>] [--keys <prod.keys>] [--record]
+# Usage: pack.py [--inbox <dir>] [--keys <prod.keys>] [--record] | pack.py --selftest (kit/selftest.py: no game files needed)
 #   --inbox: where the NSPs and prod.keys are (default ../game-files; any file name, found by content)
 #   --keys: the key file, when it is not in the inbox
 #   --record: kit build only (scripts/kit_build.sh): write expect.json from this run instead of checking against it
-import hashlib, json, os, platform, shutil, stat, subprocess, sys, tempfile, time, zipfile
+import hashlib, json, os, platform, runpy, shutil, stat, subprocess, sys, tempfile, time, zipfile
+if '--selftest' in sys.argv: runpy.run_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'selftest.py'), run_name='__main__')
 
 KIT = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(KIT); SRC = os.path.join(KIT, 'src')
 WORK = os.path.join(ROOT, 'work'); OUTD = os.path.join(ROOT, 'output'); INBOX = os.path.join(ROOT, 'game-files')
@@ -98,7 +99,7 @@ def prerequisites():
         if not os.path.exists(os.path.join(KIT, need)): probs.append(f'安装工具不完整：缺 kit/{need}（请重新解压整个安装包）')
     os.makedirs(WORK, exist_ok=True); free = shutil.disk_usage(WORK).free
     have = os.path.isdir(os.path.join(OUTD, 'game-data'))
-    if free < (2 if have else 9) * 2 ** 30: probs.append(f'磁盘空间不够：这个文件夹所在的盘只剩 {free / 2 ** 30:.1f} GB，至少需要 {2 if have else 9} GB')
+    if free < (2 if have else 9) * 2 ** 30 and not os.environ.get('SG_KIT_SELFTEST'): probs.append(f'磁盘空间不够：这个文件夹所在的盘只剩 {free / 2 ** 30:.1f} GB，至少需要 {2 if have else 9} GB')
     if probs: die('环境还没准备好：\n  • ' + '\n  • '.join(probs))
     ok(f'Python {platform.python_version()}、.NET 10、着色器工具（{platform_tag()}）、磁盘剩余 {free / 2 ** 30:.0f} GB')
     return sc

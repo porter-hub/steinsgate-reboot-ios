@@ -2,6 +2,8 @@
 
 **English** · [中文](README.zh.md)
 
+![version](https://img.shields.io/badge/version-0.1.0-0e1834)
+[![selftest](https://github.com/porter-hub/steinsgate-reboot-ios/actions/workflows/selftest.yml/badge.svg)](https://github.com/porter-hub/steinsgate-reboot-ios/actions/workflows/selftest.yml)
 ![iOS 26+](https://img.shields.io/badge/iOS-26%2B-0e1834)
 ![iPhone 12 or newer](https://img.shields.io/badge/iPhone-A14%20or%20newer-0e1834)
 ![Windows · macOS · Linux](https://img.shields.io/badge/build%20on-Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-d6b366)
@@ -24,6 +26,7 @@ Any Windows, Mac or Linux computer turns them into an iPhone app, and you instal
 - [Playing](#playing)
 - [How it works (and why Windows can build an iPhone app)](#how-it-works)
 - [Troubleshooting](#troubleshooting)
+- [Versions](#versions)
 - [What has been tested](#what-has-been-tested)
 - [What is in this repository](#what-is-in-this-repository)
 - [Legal](#legal)
@@ -162,6 +165,19 @@ compiles them once on the first launch (*preparing shaders*) and keeps the resul
 
 The console messages of the kit and the screens of the app are in Chinese.
 
+**Self-test.** To check a computer without game files, run Start with `--selftest`, for example
+`Start-Windows.bat --selftest` in a command prompt or `bash start-linux.sh --selftest`. It checks Python and its
+packages, the .NET runtime, the bundled tools against their fingerprints, the app shell and a dry run of the packer,
+and its last line says `SELFTEST OK`. When reporting a problem, include its output and `kit/BUILD-INFO.txt`.
+
+## Versions
+
+The kit follows [Semantic Versioning](https://semver.org/). It stays at 0.x until it has been confirmed on Windows and on
+more iPhones. Every release is a tag `vX.Y.Z` with a GitHub release; what changed is in [CHANGELOG.md](CHANGELOG.md).
+CI runs the self-test on Windows, macOS and Linux for every push. A package made by one version
+can be reinstalled any time; to update, pull the new version and run Start again (finished steps are reused where
+nothing changed).
+
 ## What has been tested
 
 | | |
@@ -178,12 +194,15 @@ The console messages of the kit and the screens of the app are in Chinese.
 
 ```
 README.md, README.zh.md      this guide (English / 中文)
+CHANGELOG.md                 what changed in each version
 Start-Windows.bat            Windows launcher → kit/bootstrap.ps1
 Start-macOS.command          macOS launcher   → kit/bootstrap.sh
 start-linux.sh               Linux launcher   → kit/bootstrap.sh
 game-files/                  put your NSPs and prod.keys here (ignored by git)
 kit/
   pack.py                    the packer (the eight steps above)
+  selftest.py                the self-test (--selftest; CI runs it on every system)
+  VERSION, BUILD-INFO.txt    the kit version, and how this copy was built
   bootstrap.sh / .ps1        checks uv and .NET, offers the official installers
   shell/Port-shell.zip       the content-free app (a zip on purpose: it is not installable as it is)
   src/                       the port's own tools: rewriter, shader chain, key filter, game facts (game.json)

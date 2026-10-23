@@ -1,0 +1,27 @@
+# The installer kit's self-test on every system it supports (kit/selftest.py: tools, runtimes, locks, the shell,
+# the expected outputs and a pack.py dry run up to "no game files"). No game files are involved, and none exist here.
+name: selftest
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  selftest:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: astral-sh/setup-uv@v6
+      # through the same bootstrap a user runs (uv and .NET are present, so it asks nothing)
+      - name: self-test (Windows)
+        if: runner.os == 'Windows'
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File kit/bootstrap.ps1 --selftest
+      - name: self-test (macOS, Linux)
+        if: runner.os != 'Windows'
+        run: bash kit/bootstrap.sh --selftest

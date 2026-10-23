@@ -2,6 +2,8 @@
 
 [English](README.md) · **中文**
 
+![版本](https://img.shields.io/badge/%E7%89%88%E6%9C%AC-0.1.0-0e1834)
+[![selftest](https://github.com/porter-hub/steinsgate-reboot-ios/actions/workflows/selftest.yml/badge.svg)](https://github.com/porter-hub/steinsgate-reboot-ios/actions/workflows/selftest.yml)
 ![iOS 26+](https://img.shields.io/badge/iOS-26%2B-0e1834)
 ![iPhone 12 或更新](https://img.shields.io/badge/iPhone-A14%20%E6%88%96%E6%9B%B4%E6%96%B0-0e1834)
 ![Windows · macOS · Linux](https://img.shields.io/badge/%E5%88%B6%E4%BD%9C-Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-d6b366)
@@ -21,6 +23,7 @@ Nintendo Switch 版 **STEINS;GATE 重制版（中文版 v1.0.3）** 的 iPhone �
 - [怎么玩](#怎么玩)
 - [原理（以及 Windows 为什么能做 iPhone App）](#原理)
 - [常见问题](#常见问题)
+- [版本](#版本)
 - [测试情况](#测试情况)
 - [仓库里有什么](#仓库里有什么)
 - [法律说明](#法律说明)
@@ -134,6 +137,12 @@ Sideloadly 用你的 Apple ID 签名 → iPhone
 | App 显示「安装包不完整」 | IPA 缺了文件。用 Start 重新做一次，再重新安装。 |
 | 用了一周 App 打不开了 | 用 Sideloadly 重新安装（见上面「每 7 天一次」）。 |
 
+**自检**：不放游戏文件也能检查这台电脑行不行。运行 Start 时加上 `--selftest`，例如在命令提示符里运行 `Start-Windows.bat --selftest`，或者 `bash start-linux.sh --selftest`。它会检查 Python 和组件、.NET 运行时、自带工具的指纹、App 空壳，并试跑一遍打包程序；最后一行显示 `SELFTEST OK` 就没问题。反馈问题时，请附上它的输出和 `kit/BUILD-INFO.txt`。
+
+## 版本
+
+安装工具遵循[语义化版本](https://semver.org/lang/zh-CN/)。在 Windows 和更多 iPhone 上确认可用之前，版本号保持 0.x。每次发布都有一个 `vX.Y.Z` 标签和对应的 GitHub Release，改了什么见 [CHANGELOG.md](CHANGELOG.md)（英文）。每次推送，CI 都会在 Windows、macOS、Linux 上各跑一遍自检。用某个版本做出的安装包可以随时重装；要更新，拉取新版本后再运行一次 Start 即可，没变的步骤会直接复用。
+
 ## 测试情况
 
 | | |
@@ -150,12 +159,15 @@ Sideloadly 用你的 Apple ID 签名 → iPhone
 
 ```
 README.md, README.zh.md      本说明（English / 中文）
+CHANGELOG.md                 每个版本改了什么
 Start-Windows.bat            Windows 入口 → kit/bootstrap.ps1
 Start-macOS.command          macOS 入口   → kit/bootstrap.sh
 start-linux.sh               Linux 入口   → kit/bootstrap.sh
 game-files/                  放你的 NSP 和 prod.keys（git 会忽略）
 kit/
   pack.py                    打包程序（上面那八步）
+  selftest.py                自检（--selftest；CI 在各系统上跑它）
+  VERSION, BUILD-INFO.txt    安装工具的版本号，以及这份是怎么构建的
   bootstrap.sh / .ps1        检查 uv 和 .NET，提供官方安装脚本
   shell/Port-shell.zip       不含游戏内容的 App 空壳（故意做成 zip：它本身不能直接安装）
   src/                       本移植自己的工具：改写器、着色器链、密钥过滤、游戏事实（game.json）
